@@ -1,0 +1,656 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsurX - Climate Risk Prediction for Insurance Companies</title>
+    <meta name="description" content="InsurX helps insurance companies predict climate change disasters to optimize insurance packages and pricing, preventing financial losses.">
+    <meta name="keywords" content="insurance, climate change, risk prediction, disaster forecasting, insurance pricing, risk management">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0066CC",
+                        secondary: "#00A86B",
+                        accent: "#FF6B35",
+                        dark: "#1A365D",
+                        light: "#F7FAFC"
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in': 'slideIn 0.5s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0066CC 0%, #00A86B 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            background: linear-gradient(135deg, #0066CC, #00A86B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #testimonial-slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .testimonial-slide {
+            min-width: 100%;
+        }
+    </style>
+</head>
+<body class="font-sans bg-light text-gray-800">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <img 
+                        src="./logo.svg" 
+                        alt="InsurX logo"
+                        class="h-12 w-auto"
+                    />
+                </div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#solution" class="text-gray-600 hover:text-primary transition-colors font-medium">Solution</a>
+                    <a href="#features" class="text-gray-600 hover:text-primary transition-colors font-medium">Features</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-primary transition-colors font-medium">Pricing</a>
+                    <a href="#faq" class="text-gray-600 hover:text-primary transition-colors font-medium">FAQ</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="handleSignIn()" class="px-4 py-2 text-primary font-medium hover:bg-blue-50 rounded-lg transition-colors">
+                        Sign In
+                    </button>
+                    <button onclick="handleSignUp()" class="px-6 py-2 bg-primary text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                        Sign Up
+                    </button>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-4 border-t pt-4">
+                <a href="#solution" class="block text-gray-600 hover:text-primary transition-colors font-medium">Solution</a>
+                <a href="#features" class="block text-gray-600 hover:text-primary transition-colors font-medium">Features</a>
+                <a href="#pricing" class="block text-gray-600 hover:text-primary transition-colors font-medium">Pricing</a>
+                <a href="#faq" class="block text-gray-600 hover:text-primary transition-colors font-medium">FAQ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white">
+        <div class="container mx-auto px-4 py-20">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    Predict Climate Risks.<br>
+                    <span class="text-accent">Protect Your Profits.</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    InsurX helps insurance companies predict climate change disasters to optimize insurance packages and pricing, preventing financial losses.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="window.location.href='requestdemo.html'" class="px-8 py-4 bg-accent text-white font-bold rounded-lg hover:bg-orange-600 transition-colors text-lg shadow-lg">
+                        <i class="fas fa-calendar-alt mr-2"></i>Request a Demo
+                    </button>
+                    <!-- <button onclick="handleLearnMore()" class="px-8 py-4 bg-white text-primary font-bold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+                        Learn More
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-white py-12 ">
+        <div class="container mx-auto px-4 max-w-4xl ">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6">
+                    <div class="text-5xl font-bold stat-number mb-2">92%</div>
+                    <p class="text-gray-600">Accuracy in climate risk prediction</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-5xl font-bold stat-number mb-2">$4.2M</div>
+                    <p class="text-gray-600">Average savings per insurance company</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-5xl font-bold stat-number mb-2">150+</div>
+                    <p class="text-gray-600">Insurance companies protected</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">How InsurX Protects Your Business</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Our AI-powered platform analyzes climate data to predict disasters and their impact on your clients.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+                <div class="animate-slide-up">
+                    <div class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mr-4">
+                                <i class="fas fa-cloud-sun-rain text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-dark">Climate Risk Intelligence</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            Advanced algorithms analyze historical climate data, weather patterns, and environmental factors to predict potential disasters with unprecedented accuracy.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Real-time disaster prediction models</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Regional risk assessment mapping</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Impact severity forecasting</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="animate-slide-up" style="animation-delay: 0.2s">
+                    <div class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mr-4">
+                                <i class="fas fa-chart-line text-secondary text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-dark">Smart Pricing Optimization</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6">
+                            Determine optimal insurance packages and pricing based on predicted risks, ensuring profitability while protecting your clients.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-primary mr-3"></i>
+                                <span>Dynamic premium calculation</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-primary mr-3"></i>
+                                <span>Custom package recommendations</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-primary mr-3"></i>
+                                <span>Risk-based coverage optimization</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Powerful Features</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Everything you need to make informed decisions and protect your business from climate-related losses.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">AI-Powered Predictions</h3>
+                    <p class="text-gray-600">Machine learning models that continuously improve prediction accuracy based on new data.</p>
+                </div>
+                
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-map-marked-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Interactive Risk Maps</h3>
+                    <p class="text-gray-600">Visualize climate risks across different regions with detailed interactive maps.</p>
+                </div>
+                
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-file-invoice-dollar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Automated Reporting</h3>
+                    <p class="text-gray-600">Generate comprehensive reports for stakeholders and regulatory compliance.</p>
+                </div>
+                
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-sync-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Real-time Updates</h3>
+                    <p class="text-gray-600">Get instant notifications about changing risk factors and potential threats.</p>
+                </div>
+                
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Client Protection Plans</h3>
+                    <p class="text-gray-600">Design optimal insurance packages that balance protection and profitability.</p>
+                </div>
+                
+                <div class="bg-light rounded-xl p-6 card-hover">
+                    <div class="w-14 h-14 rounded-lg gradient-bg flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-bar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-dark mb-3">Financial Analytics</h3>
+                    <p class="text-gray-600">Detailed insights into potential losses and profitability across different scenarios.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 bg-gradient-to-b from-light to-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Trusted by Industry Leaders</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">See what insurance executives are saying about InsurX.</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <!-- Testimonial Slider -->
+                <div class="relative overflow-hidden rounded-2xl bg-white shadow-xl max-w-4xl mx-auto">
+                    <div id="testimonial-slider">
+                        <!-- Testimonial 1 -->
+                        <div class="testimonial-slide p-8 md:p-12">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                                <div class="flex-shrink-0">
+                                    <img src="https://picsum.photos/150?random=101" alt="Sarah Johnson - CEO of SafeGuard Insurance" class="w-32 h-32 rounded-full object-cover border-4 border-primary/20">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="mb-6">
+                                        <i class="fas fa-quote-left text-primary text-3xl opacity-20 mb-4"></i>
+                                        <p class="text-xl md:text-2xl text-gray-700 italic mb-6">
+                                            "InsurX transformed how we assess climate risks. We've reduced our exposure to climate-related losses by 68% while maintaining competitive pricing. The platform paid for itself in the first quarter."
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-dark">Sarah Johnson</h4>
+                                        <p class="text-gray-600">CEO, SafeGuard Insurance</p>
+                                        <div class="flex mt-2">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 2 -->
+                        <div class="testimonial-slide p-8 md:p-12">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                                <div class="flex-shrink-0">
+                                    <img src="https://picsum.photos/150?random=102" alt="Michael Chen - Chief Risk Officer at Global Shield" class="w-32 h-32 rounded-full object-cover border-4 border-primary/20">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="mb-6">
+                                        <i class="fas fa-quote-left text-primary text-3xl opacity-20 mb-4"></i>
+                                        <p class="text-xl md:text-2xl text-gray-700 italic mb-6">
+                                            "The predictive accuracy of InsurX is remarkable. We avoided $12M in potential losses last hurricane season alone. Their risk mapping helped us adjust premiums before the season even started."
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-dark">Michael Chen</h4>
+                                        <p class="text-gray-600">Chief Risk Officer, Global Shield Insurance</p>
+                                        <div class="flex mt-2">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 3 -->
+                        <div class="testimonial-slide p-8 md:p-12">
+                            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                                <div class="flex-shrink-0">
+                                    <img src="https://picsum.photos/150?random=103" alt="Robert Williams - VP of Underwriting at PrimeCover" class="w-32 h-32 rounded-full object-cover border-4 border-primary/20">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="mb-6">
+                                        <i class="fas fa-quote-left text-primary text-3xl opacity-20 mb-4"></i>
+                                        <p class="text-xl md:text-2xl text-gray-700 italic mb-6">
+                                            "InsurX gave us the data-driven insights we needed to stay profitable in high-risk areas. Our underwriters now have confidence in their decisions, and our loss ratios have improved significantly."
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xl font-bold text-dark">Robert Williams</h4>
+                                        <p class="text-gray-600">VP of Underwriting, PrimeCover Group</p>
+                                        <div class="flex mt-2">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slider Controls -->
+                    <div class="flex justify-center items-center p-6 bg-gray-50">
+                        <div class="flex space-x-4">
+                            <button id="prev-testimonial" class="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="flex space-x-2">
+                                <button class="testimonial-dot w-3 h-3 rounded-full bg-primary opacity-30" data-index="0"></button>
+                                <button class="testimonial-dot w-3 h-3 rounded-full bg-primary opacity-30" data-index="1"></button>
+                                <button class="testimonial-dot w-3 h-3 rounded-full bg-primary opacity-30" data-index="2"></button>
+                            </div>
+                            <button id="next-testimonial" class="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Client Logos -->
+                <div class="mt-16">
+                    <h3 class="text-center text-xl font-semibold text-gray-600 mb-8">Trusted by leading insurance companies</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">SafeGuard</div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">GlobalShield</div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">PrimeCover</div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">RiskMaster</div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">SecureLife</div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="text-2xl font-bold text-gray-400">InsurePro</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-light">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Simple, Transparent Pricing</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Choose the plan that fits your insurance company's needs.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Monthly</h3>
+                        <p class="text-gray-600 mb-4">Starter</p>
+                        <div class="text-4xl font-bold text-dark mb-2">$500<span class="text-lg text-gray-500">/month</span></div>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Core climate risk predictions</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Up to 10,000 clients</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Regional climate risk coverage</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Standard risk reports & dashboards</span>
+                        </li>
+
+                    </ul>
+                    <!-- <button onclick="handleSignUp('starter')" class="w-full py-3 border-2 border-primary text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-colors">
+                        Get Started
+                    </button> -->
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover border-2 border-primary relative">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-bold">
+                        Most Popular
+                    </div>
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Yearly</h3>
+                        <p class="text-gray-600 mb-4">Growth</p>
+                        <div class="text-4xl font-bold text-dark mb-2">$5,000<span class="text-lg text-gray-500">/year</span></div>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Core climate risk predictions</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Up to 10,000 clients</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Regional climate risk coverage</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Detailed analytics & predictive reporting</span>
+                        </li>
+                    </ul>
+
+                    
+                    <!-- <button onclick="handleSignUp('professional')" class="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                        Get Started
+                    </button> -->
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-8 card-hover">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-dark mb-2">Per use</h3>
+                        <p class="text-gray-600 mb-4">Usage-Based</p>
+                        <div class="text-4xl font-bold text-dark mb-2">$250<span class="text-lg text-gray-500">/prediction</span></div>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Per-prediction climate risk analysis</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>No client limit — pay only for what you use</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Regional climate risk coverage</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-secondary mr-3"></i>
+                            <span>Detailed analytics & predictive reporting</span>
+                        </li>
+                    </ul>
+                    <!-- <button onclick="handleDemoRequest()" class="w-full py-3 border-2 border-dark text-dark font-bold rounded-lg hover:bg-dark hover:text-white transition-colors">
+                        Contact Sales
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Frequently Asked Questions</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Find answers to common questions about InsurX.</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="faq-item bg-light rounded-xl p-6 cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-dark">How accurate are your climate predictions?</h3>
+                        <i class="fas fa-chevron-down text-primary"></i>
+                    </div>
+                    <div class="faq-answer mt-4 hidden">
+                        <p class="text-gray-600">Our AI models achieve 92% accuracy in climate risk prediction by analyzing decades of historical data, real-time weather patterns, and environmental factors. We continuously train our models with new data to improve accuracy.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item bg-light rounded-xl p-6 cursor-pointer transition-all duration-300">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-dark">How does InsurX help prevent financial losses?</h3>
+                        <i class="fas fa-chevron-down text-primary"></i>
+                    </div>
+                    <div class="faq-answer mt-4 hidden">
+                        <p class="text-gray-600">By accurately predicting climate-related disasters, we help insurance companies adjust their pricing and coverage options. This prevents underpricing risky policies and allows for better risk distribution across your portfolio.</p>
+                    </div>
+                </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.getElementById('testimonial-slider');
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const dots = document.querySelectorAll('.testimonial-dot');
+            const prevBtn = document.getElementById('prev-testimonial');
+            const nextBtn = document.getElementById('next-testimonial');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slider.style.transform = `translateX(-${index * 100}%)`;
+                dots.forEach((dot, i) => {
+                    if (i === index) {
+                        dot.classList.add('opacity-100');
+                        dot.classList.remove('opacity-30');
+                    } else {
+                        dot.classList.add('opacity-30');
+                        dot.classList.remove('opacity-100');
+                    }
+                });
+                currentSlide = index;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                let nextSlide = currentSlide + 1;
+                if (nextSlide >= slides.length) {
+                    nextSlide = 0;
+                }
+                showSlide(nextSlide);
+            });
+
+            prevBtn.addEventListener('click', () => {
+                let prevSlide = currentSlide - 1;
+                if (prevSlide < 0) {
+                    prevSlide = slides.length - 1;
+                }
+                showSlide(prevSlide);
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    showSlide(parseInt(dot.dataset.index));
+                });
+            });
+
+            // Initialize the slider
+            showSlide(0);
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const answer = item.querySelector('.faq-answer');
+                    const icon = item.querySelector('i');
+                    
+                    if (answer.classList.contains('hidden')) {
+                        answer.classList.remove('hidden');
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    } else {
+                        answer.classList.add('hidden');
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                });
+            });
+
+            // Mobile Menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+    <footer class="bg-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <p class="text-gray-600 text-sm">&copy; 2026 InsurX Dev Team. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-primary"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-600 hover:text-primary"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-gray-600 hover:text-primary"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

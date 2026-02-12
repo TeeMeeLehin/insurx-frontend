@@ -1,0 +1,41 @@
+11:24:55 PM: build-image version: 78d0fcff90a66ed4048cfb3252450561538f796a (noble-new-builds)
+11:24:55 PM: buildbot version: 56e11047b8d1bc23ddae3b2bf8c5bdf7faa6a220
+11:24:56 PM: Fetching cached dependencies
+11:24:56 PM: Failed to fetch cache, continuing with build
+11:24:56 PM: Starting to prepare the repo for build
+11:24:56 PM: No cached dependencies found. Cloning fresh repo
+11:24:56 PM: git clone --filter=blob:none https://github.com/Docteur-Parfait/insurx
+11:24:56 PM: Preparing Git Reference refs/heads/main
+11:24:57 PM: Starting to install dependencies
+11:24:57 PM: mise ~/.config/mise/config.toml tools: python@3.14.2
+11:24:58 PM: mise ~/.config/mise/config.toml tools: ruby@3.4.8
+11:24:58 PM: mise ~/.config/mise/config.toml tools: go@1.25.6
+11:24:58 PM: v22.22.0 is already installed.
+11:24:58 PM: Now using node v22.22.0 (npm v10.9.4)
+11:24:58 PM: Enabling Node.js Corepack
+11:24:59 PM: No npm workspaces detected
+11:24:59 PM: Installing npm packages using npm version 10.9.4
+11:25:10 PM: npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+11:25:10 PM: > insurx@0.1.0 postinstall
+11:25:10 PM: > prisma generate
+11:25:11 PM: Failed during stage 'Install dependencies': dependency_installation script returned non-zero exit code: 1
+11:25:11 PM: Prisma schema loaded from prisma/schema.prisma.
+11:25:11 PM: Error: Prisma schema validation - (get-config wasm)
+11:25:11 PM: Error code: P1012
+11:25:11 PM: error: The datasource property `url` is no longer supported in schema files. Move connection URLs for Migrate to `prisma.config.ts` and pass either `adapter` for a direct database connection or `accelerateUrl` for Accelerate to the `PrismaClient` constructor. See https://pris.ly/d/config-datasource and https://pris.ly/d/prisma7-client-config
+11:25:11 PM:   -->  prisma/schema.prisma:7
+11:25:11 PM:    |
+11:25:11 PM:  6 |   provider = "sqlite"
+11:25:11 PM:  7 |   url      = env("DATABASE_URL")
+11:25:11 PM:    |
+11:25:11 PM: Validation Error Count: 1
+11:25:11 PM: [Context: getConfig]
+11:25:11 PM: Prisma CLI Version : 7.3.0
+11:25:11 PM: npm error code 1
+11:25:11 PM: npm error path /opt/build/repo
+11:25:11 PM: npm error command failed
+11:25:11 PM: npm error command sh -c prisma generate
+11:25:11 PM: npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2026-01-29T23_24_59_105Z-debug-0.log
+11:25:11 PM: Error during npm install
+11:25:11 PM: Failing build: Failed to install dependencies
+11:25:12 PM: Finished processing build request in 16.11s
