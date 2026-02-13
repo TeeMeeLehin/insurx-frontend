@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { WorkspaceLayout } from "@/components/workspace-layout";
-import { UploadSection } from "@/components/upload-section";
 import { NotificationBanner } from "@/components/notification-banner";
+import { SeasonalClimatePanel } from "@/components/seasonal-climate-panel";
+import { BulkUploadModal } from "@/components/bulk-upload-modal";
 import {
   MapPin,
   DollarSign,
@@ -16,9 +17,8 @@ import {
   ShieldCheck,
   TrendingUp,
   Zap,
-  BookOpen,
-  Info,
   Send,
+  FileSpreadsheet,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -45,12 +45,52 @@ function scoreColor(score: number) {
   };
 }
 
+/** Mock assessment data for sidebar history (so clicking an item loads it) */
+const HISTORY_MOCK: Record<
+  string,
+  { riskScore: number; hazardScore: number; aiAnalysis: string; location: string; propertyValue: string }
+> = {
+  "1024": {
+    riskScore: 61.7,
+    hazardScore: 76,
+    aiAnalysis:
+      "Analysis complete for Freetown. Hazard Score: 76/100. Primary drivers: Flood (0.92), Storm (0.75). Exposure Score: 28/100.",
+    location: "Freetown",
+    propertyValue: "2000000",
+  },
+  "1023": {
+    riskScore: 54.2,
+    hazardScore: 62,
+    aiAnalysis:
+      "Analysis complete. Hazard Score: 62/100. Moderate flood and storm exposure. Exposure Score: 35/100.",
+    location: "Accra",
+    propertyValue: "1500000",
+  },
+  "1022": {
+    riskScore: 38.0,
+    hazardScore: 45,
+    aiAnalysis:
+      "Analysis complete. Lower hazard profile. Flood and storm risks moderate. Exposure Score: 24/100.",
+    location: "Kumasi",
+    propertyValue: "800000",
+  },
+  "1021": {
+    riskScore: 72.5,
+    hazardScore: 88,
+    aiAnalysis:
+      "Analysis complete. High hazard score. Significant flood and storm drivers. Exposure Score: 42/100.",
+    location: "Lagos",
+    propertyValue: "3000000",
+  },
+};
+
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 export default function RiskAssessmentPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   /* ---- existing state (untouched) ---- */
   const [location, setLocation] = useState("");
@@ -58,6 +98,8 @@ export default function RiskAssessmentPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
 
   /* ---- new UI ref ---- */
   const resultRef = useRef<HTMLDivElement>(null);
@@ -69,6 +111,27 @@ export default function RiskAssessmentPage() {
       router.push("/login?redirect=/risk-assessment");
     }
   }, [router]);
+
+  /* ---- load assessment from URL ?load=id (e.g. from Dashboard history click) ---- */
+  useEffect(() => {
+    const loadId = searchParams.get("load");
+    if (loadId && HISTORY_MOCK[loadId]) {
+      const mock = HISTORY_MOCK[loadId];
+      setResult({
+        riskScore: mock.riskScore,
+        hazardScore: mock.hazardScore,
+        aiAnalysis: mock.aiAnalysis,
+        location: mock.location,
+      });
+      setLocation(mock.location);
+      setPropertyValue(mock.propertyValue);
+      setSelectedHistoryId(loadId);
+      setTimeout(
+        () => resultRef.current?.scrollIntoView({ behavior: "smooth" }),
+        150
+      );
+    }
+  }, [searchParams]);
 
   /* ---- existing handler (untouched) ---- */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,71 +173,64 @@ export default function RiskAssessmentPage() {
     }
   };
 
-  /* ---- sidebar history ---- */
+  const loadHistoryItem = (id: string) => {
+    const mock = HISTORY_MOCK[id];
+    if (!mock) return;
+    setResult({
+      riskScore: mock.riskScore,
+      hazardScore: mock.hazardScore,
+      aiAnalysis: mock.aiAnalysis,
+      location: mock.location,
+    });
+    setLocation(mock.location);
+    setPropertyValue(mock.propertyValue);
+    setSelectedHistoryId(id);
+    setError(null);
+    setTimeout(
+      () => resultRef.current?.scrollIntoView({ behavior: "smooth" }),
+      150
+    );
+  };
+
+  /* ---- sidebar history (with onClick so clicking loads that assessment) ---- */
   const historyItems = [
-    { id: "1024", label: "Risk Check #1024", date: "Oct 24, 2026" },
-    { id: "1023", label: "Risk Check #1023", date: "Oct 20, 2026" },
+    {
+      id: "1024",
+      label: "Risk Check #1024",
+      date: "Feb 13, 2026",
+      active: selectedHistoryId === "1024",
+      onClick: () => loadHistoryItem("1024"),
+    },
+    {
+      id: "1023",
+      label: "Risk Check #1023",
+      date: "Feb 10, 2026",
+      active: selectedHistoryId === "1023",
+      onClick: () => loadHistoryItem("1023"),
+    },
+    {
+      id: "1022",
+      label: "Risk Check #1022",
+      date: "Feb 6, 2026",
+      active: selectedHistoryId === "1022",
+      onClick: () => loadHistoryItem("1022"),
+    },
+    {
+      id: "1021",
+      label: "Risk Check #1021",
+      date: "Feb 1, 2026",
+      active: selectedHistoryId === "1021",
+      onClick: () => loadHistoryItem("1021"),
+    },
   ];
 
   /* ================================================================ */
-  /*  Context Panel                                                    */
+  /*  Context Panel – Seasonal Climate Simulation                      */
   /* ================================================================ */
+  const locationLabel =
+    location || result?.location ? `${location || result?.location}` : undefined;
   const contextPanel = (
-    <div className="p-5 space-y-6">
-      {/* Guide */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-blue-600" />
-          Assessment Guide
-        </h3>
-        <div className="space-y-2">
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">Location</p>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Enter the full property address including street, area and city for
-              accurate analysis.
-            </p>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">
-              Property Value
-            </p>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Enter the estimated market value in GHS. This affects exposure and
-              financial risk calculations.
-            </p>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">
-              Score Ranges
-            </p>
-            <div className="mt-2 space-y-1.5">
-              <div className="flex items-center gap-2 text-[11px]">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-gray-600">0&ndash;30: Low Risk</span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px]">
-                <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                <span className="text-gray-600">31&ndash;60: Moderate Risk</span>
-              </div>
-              <div className="flex items-center gap-2 text-[11px]">
-                <div className="w-2 h-2 rounded-full bg-red-500" />
-                <span className="text-gray-600">61&ndash;100: High Risk</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bulk Upload */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <Info className="w-4 h-4 text-blue-600" />
-          Bulk Assessment
-        </h3>
-        <UploadSection />
-      </div>
-    </div>
+    <SeasonalClimatePanel locationLabel={locationLabel} />
   );
 
   /* ================================================================ */
@@ -188,6 +244,8 @@ export default function RiskAssessmentPage() {
         setError(null);
         setLocation("");
         setPropertyValue("");
+        setSelectedHistoryId(null);
+        router.replace("/risk-assessment");
       }}
       contextPanel={contextPanel}
     >
@@ -201,90 +259,16 @@ export default function RiskAssessmentPage() {
         </span>
       </div>
 
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        open={bulkUploadOpen}
+        onOpenChange={setBulkUploadOpen}
+      />
+
       {/* ── Scrollable workspace ── */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
-          {/* ── Input form ── */}
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-50">
-              <h2 className="text-[14px] font-semibold text-gray-900">
-                New Assessment
-              </h2>
-              <p className="text-[12px] text-gray-400 mt-0.5">
-                Enter property details for AI-driven risk evaluation
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="space-y-3">
-                {/* Location */}
-                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-1.5 border border-gray-100 focus-within:border-blue-200 focus-within:bg-blue-50/30 transition-colors">
-                  <MapPin className="w-4 h-4 text-gray-400 ml-3 flex-shrink-0" />
-                  <Label htmlFor="location" className="sr-only">
-                    Location
-                  </Label>
-                  <Input
-                    id="location"
-                    placeholder="Enter Property Location (e.g. 10, Abafun Crescent, Labone, Accra)"
-                    className="border-0 bg-transparent shadow-none text-[14px] h-11 focus-visible:ring-0"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Value */}
-                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-1.5 border border-gray-100 focus-within:border-blue-200 focus-within:bg-blue-50/30 transition-colors">
-                  <DollarSign className="w-4 h-4 text-gray-400 ml-3 flex-shrink-0" />
-                  <Label htmlFor="value" className="sr-only">
-                    Property Value
-                  </Label>
-                  <Input
-                    id="value"
-                    type="number"
-                    placeholder="Property Value (GHS)"
-                    className="border-0 bg-transparent shadow-none text-[14px] h-11 focus-visible:ring-0"
-                    value={propertyValue}
-                    onChange={(e) => setPropertyValue(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Error */}
-              {error && (
-                <NotificationBanner
-                  type="error"
-                  title="Assessment Failed"
-                  message={`${error}. Please check your input and try again.`}
-                  action="Dismiss"
-                  onAction={() => setError(null)}
-                  onDismiss={() => setError(null)}
-                />
-              )}
-
-              {/* Submit */}
-              <Button
-                type="submit"
-                className="w-full bg-blue-900 hover:bg-blue-800 text-white h-11 rounded-xl text-[14px] font-medium gap-2"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Analyzing Risks&hellip;
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    Run Assessment
-                  </>
-                )}
-              </Button>
-            </form>
-          </div>
-
-          {/* ── Results ── */}
+          {/* ── Results (top) ── */}
           {result && (
             <div
               ref={resultRef}
@@ -446,6 +430,97 @@ export default function RiskAssessmentPage() {
               </div>
             </div>
           )}
+
+          {/* ── Input form (bottom) ── */}
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-50">
+              <h2 className="text-[14px] font-semibold text-gray-900">
+                New Assessment
+              </h2>
+              <p className="text-[12px] text-gray-400 mt-0.5">
+                Enter property details for AI-driven risk evaluation
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div className="space-y-3">
+                {/* Location */}
+                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-1.5 border border-gray-100 focus-within:border-blue-200 focus-within:bg-blue-50/30 transition-colors">
+                  <MapPin className="w-4 h-4 text-gray-400 ml-3 flex-shrink-0" />
+                  <Label htmlFor="location" className="sr-only">
+                    Location
+                  </Label>
+                  <Input
+                    id="location"
+                    placeholder="Enter Property Location (e.g. 10, Abafun Crescent, Labone, Accra)"
+                    className="border-0 bg-transparent shadow-none text-[14px] h-11 focus-visible:ring-0"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Value */}
+                <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-1.5 border border-gray-100 focus-within:border-blue-200 focus-within:bg-blue-50/30 transition-colors">
+                  <DollarSign className="w-4 h-4 text-gray-400 ml-3 flex-shrink-0" />
+                  <Label htmlFor="value" className="sr-only">
+                    Property Value
+                  </Label>
+                  <Input
+                    id="value"
+                    type="number"
+                    placeholder="Property Value (GHS)"
+                    className="border-0 bg-transparent shadow-none text-[14px] h-11 focus-visible:ring-0"
+                    value={propertyValue}
+                    onChange={(e) => setPropertyValue(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <NotificationBanner
+                  type="error"
+                  title="Assessment Failed"
+                  message={`${error}. Please check your input and try again.`}
+                  action="Dismiss"
+                  onAction={() => setError(null)}
+                  onDismiss={() => setError(null)}
+                />
+              )}
+
+              {/* Submit – Run Assessment + optional Bulk Upload CTA */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-blue-900 hover:bg-blue-800 text-white h-11 rounded-xl text-[14px] font-medium gap-2"
+                  disabled={loading}
+                >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Analyzing Risks&hellip;
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Run Assessment
+                  </>
+                )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setBulkUploadOpen(true)}
+                  className="h-11 rounded-xl text-[14px] font-medium gap-2 border-gray-200 sm:flex-shrink-0"
+                >
+                  <FileSpreadsheet className="w-4 h-4" />
+                  Upload Bulk Excel
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </WorkspaceLayout>

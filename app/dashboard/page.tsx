@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { WorkspaceLayout } from "@/components/workspace-layout";
-import { UploadSection } from "@/components/upload-section";
 import { NotificationBanner } from "@/components/notification-banner";
+import { SeasonalClimatePanel } from "@/components/seasonal-climate-panel";
+import { BulkUploadModal } from "@/components/bulk-upload-modal";
 import {
   Thermometer,
   Droplets,
@@ -19,9 +20,8 @@ import {
   ShieldCheck,
   AlertTriangle,
   TrendingUp,
-  BookOpen,
+  Plus,
   FileSpreadsheet,
-  Info,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -73,6 +73,7 @@ export default function DashboardPage() {
     title: string;
     message: string;
   } | null>(null);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   /* ---- existing effect (untouched) ---- */
@@ -188,94 +189,41 @@ export default function DashboardPage() {
   const MOCK_AI_ANALYSIS =
     "AI Analysis (Demo Mode): The region shows a moderate stability index with a 15% increase in precipitation likelihood over the next quarter. While immediate flood risks remain low, the soil saturation levels suggest caution for agricultural investments. Structure damage probability is negligible under current wind patterns.";
 
-  /* ---- sidebar history items ---- */
+  /* ---- sidebar history items (clicking loads that assessment on Risk Assessment page) ---- */
   const historyItems = [
-    { id: "1024", label: "Risk Check #1024", date: "Oct 24, 2026", active: true },
-    { id: "1023", label: "Risk Check #1023", date: "Oct 20, 2026" },
-    { id: "1022", label: "Risk Check #1022", date: "Oct 15, 2026" },
-    { id: "1021", label: "Risk Check #1021", date: "Oct 10, 2026" },
+    {
+      id: "1024",
+      label: "Risk Check #1024",
+      date: "Feb 13, 2026",
+      active: true,
+      onClick: () => router.push("/risk-assessment?load=1024"),
+    },
+    {
+      id: "1023",
+      label: "Risk Check #1023",
+      date: "Feb 10, 2026",
+      onClick: () => router.push("/risk-assessment?load=1023"),
+    },
+    {
+      id: "1022",
+      label: "Risk Check #1022",
+      date: "Feb 6, 2026",
+      onClick: () => router.push("/risk-assessment?load=1022"),
+    },
+    {
+      id: "1021",
+      label: "Risk Check #1021",
+      date: "Feb 1, 2026",
+      onClick: () => router.push("/risk-assessment?load=1021"),
+    },
   ];
 
   /* ================================================================ */
-  /*  Context Panel (right side)                                       */
+  /*  Context Panel (right side) – Seasonal Climate Simulation         */
   /* ================================================================ */
+  const locationLabel = `${data.monitoringArea.startArea} — ${data.monitoringArea.endArea}`;
   const contextPanel = (
-    <div className="p-5 space-y-6">
-      {/* Quick Guide */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-blue-600" />
-          Quick Guide
-        </h3>
-        <div className="space-y-2">
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">
-              Getting Started
-            </p>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Click &ldquo;New Assessment&rdquo; to analyse risk for a specific
-              property location.
-            </p>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">
-              Understanding Scores
-            </p>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Risk scores range 0&ndash;100. Green (0-30) low, Yellow (31-60)
-              moderate, Red (61-100) high.
-            </p>
-          </div>
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-[12px] font-medium text-gray-700">
-              AI Assistant
-            </p>
-            <p className="text-[11px] text-gray-500 mt-0.5">
-              Use the chat below the analysis to ask about climate risk,
-              underwriting, or assessment results.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Upload */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <FileSpreadsheet className="w-4 h-4 text-blue-600" />
-          Bulk Upload
-        </h3>
-        <UploadSection compact />
-        <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
-          <p className="text-[11px] text-blue-700 flex items-start gap-1.5 leading-relaxed">
-            <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
-            Upload an Excel file with columns: Location, Property&nbsp;Value.
-            Each row generates a separate risk assessment.
-          </p>
-        </div>
-      </div>
-
-      {/* Monitoring Info */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-blue-600" />
-          Monitoring Area
-        </h3>
-        <div className="p-3 bg-gray-50 rounded-lg space-y-2">
-          <div className="flex items-center justify-between text-[12px]">
-            <span className="text-gray-500">From</span>
-            <span className="font-medium text-gray-900">
-              {data.monitoringArea.startArea}
-            </span>
-          </div>
-          <div className="flex items-center justify-between text-[12px]">
-            <span className="text-gray-500">To</span>
-            <span className="font-medium text-gray-900">
-              {data.monitoringArea.endArea}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SeasonalClimatePanel locationLabel={locationLabel} />
   );
 
   /* ================================================================ */
@@ -288,18 +236,44 @@ export default function DashboardPage() {
       contextPanel={contextPanel}
     >
       {/* ── Top bar ── */}
-      <div className="h-14 border-b border-gray-200 bg-white px-6 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
+      <div className="h-14 border-b border-gray-200 bg-white px-6 flex items-center justify-between flex-shrink-0 gap-4">
+        <div className="flex items-center gap-3 min-w-0">
           <h1 className="text-[15px] font-semibold text-gray-900">Dashboard</h1>
-          <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 font-medium border border-green-100">
+          <span className="text-[11px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 font-medium border border-green-100 flex-shrink-0">
             {data.climateData.status}
           </span>
         </div>
-        <div className="hidden sm:flex items-center gap-2 text-[12px] text-gray-500">
-          <MapPin className="w-3.5 h-3.5" />
-          {data.monitoringArea.startArea} &mdash; {data.monitoringArea.endArea}
+        <div className="flex items-center gap-2 flex-shrink-0 flex-wrap justify-end">
+          <Button
+            onClick={handleStartAssessment}
+            className="bg-blue-900 hover:bg-blue-800 text-white h-9 px-4 text-[13px] gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Start Assessment
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setBulkUploadOpen(true)}
+            className="h-9 px-4 text-[13px] gap-2 border-gray-200"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Upload Bulk Excel
+          </Button>
         </div>
       </div>
+
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        open={bulkUploadOpen}
+        onOpenChange={setBulkUploadOpen}
+        onFileSelect={(file) => {
+          setNotification({
+            type: "success",
+            title: "File ready",
+            message: `${file.name} selected. Processing will begin when you confirm.`,
+          });
+        }}
+      />
 
       {/* ── Scrollable workspace ── */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
